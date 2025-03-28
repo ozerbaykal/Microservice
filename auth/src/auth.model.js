@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const bcrypt = require("bcryptjs");
 
 const userSchmema = new mongoose.Schema(
   {
@@ -44,3 +45,21 @@ const userSchmema = new mongoose.Schema(
     timestamps: true,
   }
 );
+
+//kullanıcıyı kaydetmeden önce şifreyi hash'le
+
+userSchmema.pre("save", async function (next) {
+  if (!this.isModified("password")) return next();
+
+  try {
+    const salt = bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
+  } catch (error) {}
+});
+
+//orjinal şifreyle hashlenmiş şifreyi karşılaştıran method
+
+//client 'a cevap göndermeden önce  hassas verileri gizle
+
+//module oluştur
+const User = mongoose.model("User", userSchmema);
