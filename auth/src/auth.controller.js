@@ -1,3 +1,4 @@
+const AuthService = require("./auth.service");
 class AuthController {
   constructor() {}
   async register(req, res) {}
