@@ -38,7 +38,7 @@ app.use("/api/auth", authRoutes);
 
 app.use((err, req, res, next) => {
   console.log(err.stack);
-  res.status(500).json({ message: "Birşeyler ters gitti" });
+  res.status(500).json({ status: "fail", message: err.message || "Birşeyler ters gitti " });
 });
 
 //404 middleware
