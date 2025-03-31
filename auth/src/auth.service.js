@@ -4,7 +4,6 @@ const ampq = require("amqplib");
 class AuthService {
   constructor() {
     this.channel = null;
-    console.log("initializeRabbitMq fonksiyonu başlatılıyor...");
     this.init();
   }
   async init() {
@@ -17,16 +16,11 @@ class AuthService {
 
   async initializeRabbitMq() {
     try {
-      console.log("RabbitMQ bağlantısı başlatılıyor...");
-
       const connection = await ampq.connect(process.env.RABBITMQ_URL);
-      console.log("RabbitMQ bağlantısı sağlandı.");
       this.channel = await connection.createChannel();
-      console.log("Kanal oluşturuldu.");
       await this.channel.assertExchange(process.env.RABBITMQ_EXCHANGE, "topic", { durable: true });
       console.log(`Exchange ${process.env.RABBITMQ_EXCHANGE} başarıyla oluşturuldu.`);
       await this.channel.assertQueue(process.env.RABBITMQ_QUEUE);
-      console.log("RabbitMq'ya bağlandı");
     } catch (error) {
       console.error(" RabbitMq'ya bağlanamadı", error);
     }
