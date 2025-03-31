@@ -37,7 +37,6 @@ app.use("/api/auth", authRoutes);
 //hata middleware
 
 app.use((err, req, res, next) => {
-  console.log(err.stack);
   res.status(500).json({ status: "fail", message: err.message || "Birşeyler ters gitti " });
 });
 

@@ -52,7 +52,7 @@ userSchmema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
 
   try {
-    const salt = bcrypt.genSalt(10);
+    const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);
   } catch (error) {
     next(error);
@@ -65,6 +65,15 @@ userSchmema.methods.comparePassword = async function (candidatePass) {
 };
 
 //client 'a cevap göndermeden önce  hassas verileri gizle
+userSchmema.methods.toJSON = function () {
+  const obj = this.toObject();
+  delete obj.password;
+  delete obj.refreshToken;
+  delete obj.__v;
+  return obj;
+};
 
 //module oluştur
 const User = mongoose.model("User", userSchmema);
+
+module.exports = User;
