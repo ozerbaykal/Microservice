@@ -53,7 +53,34 @@ class AuthService {
     await user.save();
     return { user, ...tokens };
   }
-  async login() {}
+  async login(email, password) {
+    try {
+      //bu mailde kullanıcı var mı
+      const user = await User.findOne({ email });
+      if (!user) {
+        throw new Error("Kullanıcı bulunamadı");
+      }
+      // kullanıcı hesabı aktif mi ?
+      if (!user.isActive) {
+        throw new Error("Kullanıcı hesabı inaktif");
+      }
+
+      //yazılan şifre doğrumu
+      const isValid = await user.comparePassword(password);
+      if (!isValid) {
+        throw new Error("Şifre yanlış");
+      }
+      // son giriş tarihini güncelle
+      user.lastLogin = new Date();
+      await user.save();
+      //tokenlerı oluştur
+
+      const tokens = this.generateTokens(user);
+
+      //verileri return et
+      return { ...tokens, user };
+    } catch (error) {}
+  }
   async refresh() {}
   async logout() {}
 }
