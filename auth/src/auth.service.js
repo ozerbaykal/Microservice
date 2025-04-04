@@ -37,6 +37,25 @@ class AuthService {
 
     return { accessToken, refreshToken };
   }
+  async validateToken(token) {
+    try {
+      //Acsesstoken geçerli mi kontrol et
+      const decoted = jwt.verify(token, process.env.JWT_SECRET);
+
+      //kullanıcıyı id sinden buluyoruz
+      const user = await User.findById(decoted.userId);
+
+      //kullanıcı hala aktif mi kontrol et
+      if (!user || !user.isActive) {
+        throw new Error("Artık bu kullanıcı bulunamıyor");
+      }
+
+      //yeni accessToken i return et
+      return decoted;
+    } catch (error) {
+      throw error;
+    }
+  }
 
   async register(userData) {
     //aynı maile kayıtlı  kullanıcı var mı ?

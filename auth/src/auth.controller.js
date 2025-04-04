@@ -9,7 +9,15 @@ class AuthController {
       const value = await validateDto(req.body, registerSchema);
       //servis katmanı ile iletişime geç
       const { refreshToken, ...result } = await AuthService.register(value);
-      res.cookie(refreshToken).status(201).json(result);
+      res
+        .cookie("refreshToken", refreshToken, {
+          httpOnly: true,
+          secure: false,
+          sameSite: "strict",
+          maxAge: 7 * 24 * 60 * 60 * 1000,
+        })
+        .status(201)
+        .json(result);
     } catch (error) {
       if (error.message === "Bu email'e ait kullanıcı var") {
         return res.status(409).json({ message: error.message });
@@ -21,7 +29,15 @@ class AuthController {
     try {
       const { email, password } = await validateDto(req.body, loginSchema);
       const { refreshToken, ...result } = await AuthService.login(email, password);
-      res.cookie("refreshToken", refreshToken).status(200).json(result);
+      res
+        .cookie("refreshToken", refreshToken, {
+          httpOnly: true,
+          secure: false,
+          sameSite: "strict",
+          maxAge: 7 * 24 * 60 * 60 * 1000,
+        })
+        .status(200)
+        .json(result);
     } catch (error) {
       next(error);
     }
@@ -43,7 +59,11 @@ class AuthController {
       next(error);
     }
   }
-  async logout(req, res) {}
+  async logout(req, res) {
+    res.clearCookie("refreshToken");
+    res.json({ message: "Logged out successfully" });
+  }
+  async getProfile(req, res, next) {}
 }
 
 module.exports = new AuthController();
