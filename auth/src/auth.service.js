@@ -50,8 +50,8 @@ class AuthService {
         throw new Error("Artık bu kullanıcı bulunamıyor");
       }
 
-      //yeni accessToken i return et
-      return decoted;
+      //token in içerisinden alınan verileri return ets
+      return user;
     } catch (error) {
       throw error;
     }

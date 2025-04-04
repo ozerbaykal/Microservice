@@ -63,7 +63,9 @@ class AuthController {
     res.clearCookie("refreshToken");
     res.json({ message: "Logged out successfully" });
   }
-  async getProfile(req, res, next) {}
+  async getProfile(req, res, next) {
+    res.json(req.user);
+  }
 }
 
 module.exports = new AuthController();
