@@ -1,4 +1,5 @@
 const { validateDto, loginSchema, registerSchema } = require("./auth.dto");
+const authService = require("./auth.service");
 const AuthService = require("./auth.service");
 
 class AuthController {
@@ -20,13 +21,28 @@ class AuthController {
     try {
       const { email, password } = await validateDto(req.body, loginSchema);
       const { refreshToken, ...result } = await AuthService.login(email, password);
-
-      res.cookie(refreshToken).status(200).json(result);
+      res.cookie("refreshToken", refreshToken).status(200).json(result);
     } catch (error) {
       next(error);
     }
   }
-  async refresh(req, res) {}
+  async refresh(req, res, next) {
+    try {
+      //çerezlerle gelen refresh token'e eriş
+      const { refreshToken } = req.cookies;
+      if (!refreshToken) {
+        next(new Error("Refresh tokena erişilemedi"));
+      }
+
+      //refresh token geçerli mi kontrol et
+      const accessToken = await authService.refresh(refreshToken);
+
+      //client'e gönder
+      return res.status(200).json(accessToken);
+    } catch (error) {
+      next(error);
+    }
+  }
   async logout(req, res) {}
 }
 

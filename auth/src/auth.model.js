@@ -61,7 +61,7 @@ userSchmema.pre("save", async function (next) {
 
 //orjinal şifreyle hashlenmiş şifreyi karşılaştıran method
 userSchmema.methods.comparePassword = async function (candidatePass) {
-  return bcrypt.compare(candidatePass, this.password);
+  return await bcrypt.compare(candidatePass, this.password);
 };
 
 //client 'a cevap göndermeden önce  hassas verileri gizle

@@ -74,14 +74,36 @@ class AuthService {
       user.lastLogin = new Date();
       await user.save();
       //tokenlerı oluştur
-
       const tokens = this.generateTokens(user);
 
       //verileri return et
       return { ...tokens, user };
-    } catch (error) {}
+    } catch (error) {
+      throw error;
+    }
   }
-  async refresh() {}
+  async refresh(token) {
+    try {
+      //refresh token geçerli mi kontrol et
+      const decoted = jwt.verify(token, process.env.JWT_REFRESH_SECRET);
+
+      //kullanıcıyı id sinden buluyoruz
+      const user = await User.findById(decoted.userId);
+
+      //kullanıcı hala aktif mi kontrol et
+      if (!user || !user.isActive) {
+        throw new Error("Artık bu kullanıcı bulunamıyor");
+      }
+      //yeni accesstoken oluştur
+      const accessToken = jwt.sign({ userId: user._id, role: user.role }, process.env.JWT_SECRET, {
+        expiresIn: process.env.JWT_EXPIRES_IN,
+      });
+      //yeni accessToken i return et
+      return accessToken;
+    } catch (error) {
+      throw error;
+    }
+  }
   async logout() {}
 }
 module.exports = new AuthService();
