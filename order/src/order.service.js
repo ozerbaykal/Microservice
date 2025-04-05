@@ -1,4 +1,4 @@
-const ampq = require("amqplib ");
+const ampq = require("amqplib");
 //Business Logic'i yönetecek ve veritabanı ile iletişime geçecek
 
 class OrderService {
