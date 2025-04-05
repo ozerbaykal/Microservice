@@ -1,7 +1,7 @@
 const ampq = require("amqplib ");
 //Business Logic'i yönetecek ve veritabanı ile iletişime geçecek
 
-class AuthService {
+class OrderService {
   constructor() {
     this.channel = null;
     this.init();
@@ -25,10 +25,10 @@ class AuthService {
       console.error(" RabbitMq'ya bağlanamadı", error);
     }
   }
-  static async register() {}
-  static async login() {}
+  static async createOrder() {}
+  static async getOrder() {}
   static async refresh() {}
   static async logout() {}
 }
 
-module.exports = new AuthService();
+module.exports = new OrderService();

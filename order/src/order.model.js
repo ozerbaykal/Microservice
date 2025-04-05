@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
-const bcrypt = require("bcryptjs");
 
-const userSchmema = new mongoose.Schema(
+const orderSchmema = new mongoose.Schema(
   {
     email: {
       type: String,
@@ -19,4 +18,4 @@ const userSchmema = new mongoose.Schema(
 //client 'a cevap göndermeden önce  hassas verileri gizle
 
 //module oluştur
-const User = mongoose.model("User", userSchmema);
+const Order = mongoose.model("Order", orderSchmema);

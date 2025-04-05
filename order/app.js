@@ -4,7 +4,7 @@ const cors = require("cors");
 const morgan = require("morgan");
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
-const authRoutes = require("./src/auth.routes");
+const orderRoutes = require("./src/order.routes");
 const cookieParser = require("cookie-parser");
 require("dotenv").config();
 
@@ -29,10 +29,11 @@ const limiter = rateLimit({
   windowMs: process.env.RATE_LIMIT_WINDOW * 60 * 1000,
   max: process.env.RATE_LIMIT_MAX_REQUESTS,
 });
-app.use("/api", limiter);
+
+app.use("/", limiter);
 
 //route
-app.use("/api/auth", authRoutes);
+app.use("/", orderRoutes);
 
 //hata middleware
 
@@ -48,7 +49,7 @@ app.use((req, res) => {
 
 //dinlemeye başla
 
-const PORT = process.env.PORT || 3005;
+const PORT = process.env.PORT || 3003;
 
 app.listen(PORT, () => {
   console.log(`Auth service'i ${PORT} portunda çalışıyor..`);
