@@ -2,12 +2,37 @@ const mongoose = require("mongoose");
 
 const productSchema = new mongoose.Schema(
   {
-    email: {
+    name: {
       type: String,
-      require: true,
-      unique: true,
+      required: true,
       trim: true,
-      lowercase: true,
+    },
+    description: {
+      type: String,
+      required: true,
+    },
+    price: {
+      type: Number,
+      required: true,
+      min: 0,
+    },
+    stock: {
+      type: Number,
+      required: true,
+      min: 0,
+      default: 0,
+    },
+    category: {
+      type: String,
+      required: true,
+    },
+    imageUrl: {
+      type: String,
+      default: defaultImageUrl,
+    },
+    isActive: {
+      type: Boolean,
+      default: true,
     },
   },
   {

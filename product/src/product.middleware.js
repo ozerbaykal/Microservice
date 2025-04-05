@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 //token i doğrulayacak middleware
-const authenticate = (req, res, next) => {
+exports.authenticate = (req, res, next) => {
   //header olarak accsessToken geldimi kontrol et
   const authHeader = req.headers.authorization;
   if (!authHeader) {
@@ -20,4 +20,11 @@ const authenticate = (req, res, next) => {
   }
 };
 
-module.exports = authenticate;
+//sadece adminlere izin veren middleware
+exports.admin = (req, res, next) => {
+  if (req.user && req.user.role === "admin") {
+    next();
+  } else {
+    res.status(403).json({ message: "Erişim reddedildi,Sadece admin" });
+  }
+};

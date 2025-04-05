@@ -2,12 +2,42 @@ const mongoose = require("mongoose");
 
 const orderSchmema = new mongoose.Schema(
   {
-    email: {
+    user: {
       type: String,
-      require: true,
-      unique: true,
-      trim: true,
-      lowercase: true,
+      required: true,
+    },
+    products: [
+      {
+        productId: {
+          type: String,
+          required: true,
+        },
+        name: {
+          type: String,
+          required: true,
+        },
+        price: {
+          type: Number,
+          required: true,
+        },
+        quantity: {
+          type: Number,
+          required: true,
+          default: 1,
+        },
+      },
+    ],
+    status: {
+      type: String,
+      enum: ["pending", "processing", "completed", "cancelled"],
+      default: "pending",
+    },
+    destination: {
+      city: { type: String, required: true },
+      district: { type: String, required: true },
+      street: { type: String, required: true },
+      apartment: { type: Number, required: true },
+      flat: { type: Number, required: true },
     },
   },
   {
