@@ -29,10 +29,10 @@ const limiter = rateLimit({
   windowMs: process.env.RATE_LIMIT_WINDOW * 60 * 1000,
   max: process.env.RATE_LIMIT_MAX_REQUESTS,
 });
-app.use("/api", limiter);
+app.use("/", limiter);
 
 //route
-app.use("/api/auth", authRoutes);
+app.use("/", authRoutes);
 
 //hata middleware
 
