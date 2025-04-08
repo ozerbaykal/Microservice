@@ -81,7 +81,13 @@ class ProductController {
   }
   async deleteProduct(req, res, next) {
     try {
-      res.status(200).json({ message: "başarılı" });
+      const { id } = req.params;
+      const deletedProduct = await ProductService.deleteProduct(id);
+      if (!deletedProduct) {
+        return res.status(404).json({ message: "Ürün bulunamadı" });
+      }
+
+      res.status(200).json({ message: " Ürün başarı ile silindi" });
     } catch (error) {}
   }
 }

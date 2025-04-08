@@ -80,6 +80,13 @@ class ProductService {
       throw error;
     }
   }
+  async deleteProduct(id) {
+    try {
+      return await Product.findByIdAndUpdate(id, { isActive: false }, { new: true });
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 module.exports = new ProductService();
