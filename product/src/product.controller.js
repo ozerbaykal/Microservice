@@ -40,13 +40,29 @@ class ProductController {
   }
   async getProduct(req, res, next) {
     try {
-      res.status(200).json({ message: "başarılı" });
-    } catch (error) {}
+      const { id } = req.params;
+      const product = await ProductService.getProductById(id);
+      if (!product) {
+        return res.status(404).json({ error: "Ürün bulunamadı" });
+      }
+      res.status(200).json({ product });
+    } catch (error) {
+      next(error);
+    }
   }
   async updateProduct(req, res, next) {
     try {
-      res.status(200).json({ message: "başarılı" });
-    } catch (error) {}
+      const { id } = req.params;
+      const updatedData = req.body;
+      const updatedProduct = await ProductService.updateProduct(id, updatedData);
+      if (!updatedProduct) {
+        return res.status(404).json({ message: "Ürün bulunamadı" });
+      }
+
+      res.status(200).json({ product: updatedProduct });
+    } catch (error) {
+      next(error);
+    }
   }
   async updateStock(req, res, next) {
     try {

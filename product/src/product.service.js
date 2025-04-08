@@ -47,6 +47,20 @@ class ProductService {
       throw error;
     }
   }
+  async getProductById(procuctId) {
+    try {
+      return await Product.findById(procuctId);
+    } catch (error) {
+      throw error;
+    }
+  }
+  async updateProduct(id, data) {
+    try {
+      return await Product.findByIdAndUpdate(id, data, { new: true, runValidators: true });
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 module.exports = new ProductService();
