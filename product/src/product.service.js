@@ -1,5 +1,6 @@
 const ampq = require("amqplib");
 const Product = require("./product.model");
+const { options } = require("joi");
 //Business Logic'i yönetecek ve veritabanı ile iletişime geçecek
 
 class ProductService {
@@ -30,6 +31,18 @@ class ProductService {
     try {
       const product = new Product(productData);
       return await product.save();
+    } catch (error) {
+      throw error;
+    }
+  }
+  async getAllProducts(query = {}) {
+    try {
+      const filter = { isActive: true };
+      if (query.title) filter.name = { $regex: query.title, $options: "i" };
+      if (query.category) filter.category = query.category;
+      if (query.minPrice) filter.price = { $gte: query.minPrice };
+      if (query.maxPrice) filter.price = { ...filter.price, $lte: query.maxPrice };
+      return await Product.find(filter);
     } catch (error) {
       throw error;
     }
