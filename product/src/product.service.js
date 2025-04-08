@@ -61,6 +61,25 @@ class ProductService {
       throw error;
     }
   }
+
+  async updateStock(id, quantity) {
+    try {
+      //ürün yoksa hata gönder
+      const product = await Product.findById(id);
+      if (!product) {
+        throw new Error("Ürün bulunamadı");
+      }
+      //stock 0'ın altındaysa hata gönder
+      const newStock = product.stock + quantity;
+      if (newStock < 0) {
+        throw new Error("Yetersiz stock");
+      }
+      //veritabanına yeni stockları ekle
+      return await Product.findByIdAndUpdate(id, { $inc: { stock: quantity } }, { new: true });
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 module.exports = new ProductService();
