@@ -1,11 +1,20 @@
+const { validateDto, orderSchema } = require("./order.dto");
 const OrderService = require("./order.service");
 
 class OrderController {
-  constructor() {}
-  async createOrder(req, res) {}
-  async getOrder(req, res) {}
-  async updateOrderStatus(req, res) {}
-  async getUserOrders(req, res) {}
+  async createOrder(req, res, next) {
+    try {
+      const orderData = await validateDto(req.body, orderSchema);
+      const order = await OrderService.createOrder(req.user.userId, orderData);
+
+      return res.status(201).json({ order: order });
+    } catch (error) {
+      next(error);
+    }
+  }
+  async getOrder(req, res, next) {}
+  async updateOrderStatus(req, res, next) {}
+  async getUserOrders(req, res, next) {}
 }
 
 module.exports = new OrderController();

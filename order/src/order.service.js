@@ -1,4 +1,5 @@
 const ampq = require("amqplib");
+const Order = require("./order.model");
 //Business Logic'i yönetecek ve veritabanı ile iletişime geçecek
 
 class OrderService {
@@ -25,10 +26,18 @@ class OrderService {
       console.error(" RabbitMq'ya bağlanamadı", error);
     }
   }
-  static async createOrder() {}
-  static async getOrder() {}
-  static async refresh() {}
-  static async logout() {}
+  async createOrder(userId, orderData) {
+    try {
+      const newOrder = new Order({
+        user: userId,
+        ...orderData,
+      });
+      const savedOrder = await newOrder.save();
+      return savedOrder;
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 module.exports = new OrderService();

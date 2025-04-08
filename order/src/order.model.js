@@ -53,3 +53,4 @@ orderSchmema.methods.toJSON = function () {
 };
 //module oluştur
 const Order = mongoose.model("Order", orderSchmema);
+module.exports = Order;

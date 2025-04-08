@@ -39,7 +39,7 @@ app.use("/", orderRoutes);
 
 app.use((err, req, res, next) => {
   console.log(err.stack);
-  res.status(500).json({ message: "Birşeyler ters gitti" });
+  res.status(500).json({ message: err.message || "Birşeyler ters gitti" });
 });
 
 //404 middleware
