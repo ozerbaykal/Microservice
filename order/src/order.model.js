@@ -46,6 +46,10 @@ const orderSchmema = new mongoose.Schema(
 );
 
 //client 'a cevap göndermeden önce  hassas verileri gizle
-
+orderSchmema.methods.toJSON = function () {
+  const obj = this.toObject();
+  delete obj.__v;
+  return obj;
+};
 //module oluştur
 const Order = mongoose.model("Order", orderSchmema);

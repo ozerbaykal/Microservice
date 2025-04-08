@@ -1,11 +1,14 @@
 const Joi = require("joi");
+const { defaultImageUrl } = require("../constants");
 
-const registerSchema = Joi.object({
-  email: Joi.string().email().required(),
-});
-
-const loginSchema = Joi.object({
-  password: Joi.string().min(6).required(),
+const productSchema = Joi.object({
+  name: Joi.string().required(),
+  description: Joi.string().required(),
+  price: Joi.number().min(0).required(),
+  stock: Joi.number().min(0).required().default(0),
+  category: Joi.string().required(),
+  imageUrl: Joi.string().default(defaultImageUrl),
+  isActive: Joi.boolean().default(true),
 });
 
 async function validateDto(data, schema) {
@@ -18,4 +21,4 @@ async function validateDto(data, schema) {
   return value;
 }
 
-module.exports = { validateDto, loginSchema, registerSchema };
+module.exports = { validateDto, productSchema };

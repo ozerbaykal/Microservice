@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-
+const { defaultImageUrl } = require("../constants");
 const productSchema = new mongoose.Schema(
   {
     name: {
@@ -49,3 +49,4 @@ productSchema.methods.toJSON = function () {
 
 //module oluştur
 const Product = mongoose.model("Product", productSchema);
+module.exports = Product;

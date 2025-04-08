@@ -1,4 +1,5 @@
 const ampq = require("amqplib");
+const Product = require("./product.model");
 //Business Logic'i yönetecek ve veritabanı ile iletişime geçecek
 
 class ProductService {
@@ -25,10 +26,14 @@ class ProductService {
       console.error(" RabbitMq'ya bağlanamadı", error);
     }
   }
-  static async register() {}
-  static async login() {}
-  static async refresh() {}
-  static async logout() {}
+  async createProduct(productData) {
+    try {
+      const product = new Product(productData);
+      return await product.save();
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 module.exports = new ProductService();
