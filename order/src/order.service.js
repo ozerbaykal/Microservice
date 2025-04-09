@@ -50,6 +50,13 @@ class OrderService {
       throw error;
     }
   }
+  async getUserOrders(userId) {
+    try {
+      return await Order.find({ user: userId });
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 module.exports = new OrderService();
