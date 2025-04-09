@@ -1,5 +1,5 @@
 const { validateDto, orderSchema } = require("./order.dto");
-const OrderService = require("./order.service");
+const orderService = require("./order.service");
 
 class OrderController {
   async createOrder(req, res, next) {
@@ -12,7 +12,19 @@ class OrderController {
       next(error);
     }
   }
-  async getOrder(req, res, next) {}
+  async getOrder(req, res, next) {
+    try {
+      const { orderId } = req.params;
+      const order = await orderService.getOrderById(orderId);
+      if (!order) {
+        return res.status(404).json({ error: "sipariş bulunamadı" });
+      }
+      res.status(200).json({ order });
+    } catch (error) {
+      next(error);
+    }
+  }
+
   async updateOrderStatus(req, res, next) {}
   async getUserOrders(req, res, next) {}
 }

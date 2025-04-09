@@ -5,6 +5,7 @@ const { options } = require("joi");
 
 class ProductService {
   constructor() {
+    this.connection = null;
     this.channel = null;
     this.init();
   }
@@ -18,13 +19,36 @@ class ProductService {
 
   async initializeRabbitMq() {
     try {
-      const connection = await ampq.connect(process.env.RABBITMQ_URL);
-      this.channel = await connection.createChannel();
-      await this.channel.assertExchange(process.env.RABBITMQ_EXCHANGE, "topic", { durable: true });
-      console.log(`Exchange ${process.env.RABBITMQ_EXCHANGE} başarıyla oluşturuldu.`);
-      await this.channel.assertQueue(process.env.RABBITMQ_QUEUE);
+      this.connection = await ampq.connect(process.env.RABBITMQ_URL);
+      this.channel = await this.connection.createChannel();
+      await this.channel.assertQueue(process.env.RABBITMQ_PRODUCT_QUEUE);
+      //product kuyruğuna gelen mesajları dinle
+      this.channel.consume(process.env.RABBITMQ_PRODUCT_QUEUE, async (data) => {
+        try {
+          //kanaldan gelen mesaja eriş
+          const orderData = JSON.parse(data.content.toString());
+          console.log("products kuyruğuna gelen mesaj", orderData);
+          //stock'ları güncelleyecek methodu çaıştır
+          await this.processOrder(orderData);
+          //kuyruğa işlemin başarılı olduğunu bildir
+          this.channel.ack(data);
+        } catch (error) {
+          //kuyruga işlemin başarısız olduğunu bildir
+          this.channel.nack(data);
+        }
+      });
+
+      console.log("RabbitMQ'ya bağlandı");
     } catch (error) {
       console.error(" RabbitMq'ya bağlanamadı", error);
+    }
+  }
+  // sipariş edilne her ürünü için stock eksiltir
+  async processOrder(orderData) {
+    const { products } = orderData;
+
+    for (const product of products) {
+      await this.updateStock(product.productId, -product.quantity);
     }
   }
   async createProduct(productData) {

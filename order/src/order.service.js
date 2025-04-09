@@ -17,11 +17,11 @@ class OrderService {
 
   async initializeRabbitMq() {
     try {
-      const connection = await ampq.connect(process.env.RABBITMQ_URL);
+      const connection = await amqp.connect(process.env.RABBITMQ_URL);
       this.channel = await connection.createChannel();
-      await this.channel.assertExchange(process.env.RABBITMQ_EXCHANGE, "topic", { durable: true });
-      console.log(`Exchange ${process.env.RABBITMQ_EXCHANGE} başarıyla oluşturuldu.`);
-      await this.channel.assertQueue(process.env.RABBITMQ_QUEUE);
+      await this.channel.assertQueue(process.env.RABBITMQ_ORDER_QUEUE);
+      await this.channel.assertQueue(process.env.RABBITMQ_PRODUCT_QUEUE);
+      console.log("RabbitMQ'ya bağlandı");
     } catch (error) {
       console.error(" RabbitMq'ya bağlanamadı", error);
     }
@@ -33,7 +33,19 @@ class OrderService {
         ...orderData,
       });
       const savedOrder = await newOrder.save();
+      //product servisine sipariş oluşturduğunun haberini gönder
+      if (this.channel) {
+        this.channel.sendToQueue(process.env.RABBITMQ_PRODUCT_QUEUE), Buffer.from(JSON.stringify(savedOrder));
+      }
+
       return savedOrder;
+    } catch (error) {
+      throw error;
+    }
+  }
+  async getOrderById(orderId) {
+    try {
+      return await Order.findById(orderId);
     } catch (error) {
       throw error;
     }
