@@ -25,10 +25,23 @@ class OrderController {
     }
   }
 
-  async updateOrderStatus(req, res, next) {}
+  async updateOrderStatus(req, res, next) {
+    try {
+      const { orderId } = req.params;
+      const { status } = req.body;
+      const updatedOrder = await OrderService.updateOrderStatus(orderId, status);
+      if (!updatedOrder) {
+        return res.status(404).json({ error: "Ürün bulunamadı" });
+      }
+      res.status(200).json(updatedOrder);
+    } catch (error) {
+      res.status(500).json({ error: "Güncellerken bir sorun oluştu" });
+    }
+  }
   async getUserOrders(req, res, next) {
     try {
       const orders = await OrderService.getUserOrders(req.user.userId);
+
       res.status(200).json({ orders });
     } catch (error) {
       next(error);

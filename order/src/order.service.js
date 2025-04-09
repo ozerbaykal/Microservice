@@ -57,6 +57,13 @@ class OrderService {
       throw error;
     }
   }
+  async updateOrderStatus(orderId, newStatus) {
+    try {
+      return await Order.findByIdAndUpdate(orderId, { status: newStatus }, { new: true });
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 module.exports = new OrderService();
